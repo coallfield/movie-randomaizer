@@ -8,6 +8,15 @@ export type MovieEntity = {
     detailsUrl: string | null
 }
 
+// for field tag: name
+export const movieEntityKeys = {
+    id: 'id',
+    name: 'name',
+    description: 'description',
+    imageUrl: 'imageUrl',
+    detailsUrl: 'detailsUrl',
+} as const
+
 export const createMovieInputSchema = z.object({
     name: z.string().min(1, 'Name required'),
     description: z.string().optional(),
