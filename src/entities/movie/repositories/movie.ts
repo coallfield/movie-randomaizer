@@ -9,6 +9,15 @@ class MovieRepository {
         return prisma.movie.findMany()
     }
 
+    randomMovie = async (): Promise<MovieEntity> => {
+        const result = await prisma.$queryRaw<MovieEntity[]>`
+            SELECT *
+            FROM Movie
+            ORDER BY RANDOM()
+            LIMIT 1;`
+        return result[0]
+    }
+
     createMovie = async (movie: CreateMovieEntity): Promise<MovieEntity> => {
         const newMovie = await prisma.movie.create({
             data: {

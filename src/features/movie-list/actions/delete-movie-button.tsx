@@ -14,6 +14,9 @@ export const DeleteMovieButton = (props: Props) => {
     return isPending ? (
         <Spinner />
     ) : (
-        <X className="cursor-pointer" onClick={() => action(movieId)} />
+        <X
+            className="hover:text-destructive duration-300 ease-in-out"
+            onClick={() => action(movieId)}
+        />
     )
 }
