@@ -1,7 +1,8 @@
 import { X } from 'lucide-react'
-import { deleteMovie } from '@/entities/movie/services/delete-movie'
-import { useMovieActions } from '@/shared/lib/use-movie-ations'
+import { deleteMovie } from '@/entities/movie'
+import { useMutation } from '@/shared/lib/use-query-mutation'
 import { Spinner } from '@/shared/ui/spinner'
+import { MovieEntity } from '@/entities/movie/domain'
 
 interface Props {
     movieId: string
@@ -9,14 +10,15 @@ interface Props {
 
 export const DeleteMovieButton = (props: Props) => {
     const { movieId } = props
-    const { action, isPending } = useMovieActions(deleteMovie)
 
-    return isPending ? (
+    const { execute, isLoading } = useMutation<string, MovieEntity>(deleteMovie)
+
+    return isLoading ? (
         <Spinner />
     ) : (
         <X
             className="hover:text-destructive duration-300 ease-in-out"
-            onClick={() => action(movieId)}
+            onClick={() => execute(movieId)}
         />
     )
 }

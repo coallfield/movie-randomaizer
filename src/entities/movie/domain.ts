@@ -22,7 +22,7 @@ export const createMovieInputSchema = z.object({
     description: z.string().optional(),
     imageUrl: z.string().optional(),
     detailsUrl: z.string().optional(),
-    creatorId: z.string().optional(),
+    creatorEmail: z.string(),
 })
 
 export type CreateMovieEntity = z.infer<typeof createMovieInputSchema>

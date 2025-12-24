@@ -1,8 +1,6 @@
 import { CreateMovieEntity, MovieEntity } from '@/entities/movie/domain'
 import { prisma } from '@/shared/lib/db'
 import cuid from 'cuid'
-import { revalidatePath } from 'next/cache'
-import { routes } from '@/shared/lib/routes'
 
 class MovieRepository {
     moviesList = async (): Promise<MovieEntity[]> => {
@@ -26,26 +24,26 @@ class MovieRepository {
                 description: movie.description,
                 imageUrl: movie.imageUrl,
                 detailsUrl: movie.detailsUrl,
+                users: {
+                    connect: { email: movie.creatorEmail },
+                },
             },
         })
-        revalidatePath(routes.main)
+
         return newMovie
     }
 
     updateMovie = async (movie: MovieEntity): Promise<MovieEntity> => {
-        const updatedMovie = await prisma.movie.update({
+        return prisma.movie.update({
             where: { id: movie.id },
             data: movie,
         })
-        revalidatePath(routes.main)
-        return updatedMovie
     }
 
-    deleteMovie = async (movieId: string): Promise<void> => {
-        await prisma.movie.delete({
+    deleteMovie = async (movieId: string): Promise<MovieEntity> => {
+        return prisma.movie.delete({
             where: { id: movieId },
         })
-        revalidatePath(routes.main)
     }
 }
 

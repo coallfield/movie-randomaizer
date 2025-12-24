@@ -1,3 +1,1 @@
-export const routes = {
-    main: '/',
-} as const
+export const routes = { main: '/' } as const

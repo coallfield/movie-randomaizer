@@ -1,17 +1,27 @@
 'use server'
 
-import { createMovie } from '@/entities/movie/services/create-movie'
-import { createMovieInputSchema } from '@/entities/movie/domain'
-import { left, right } from '@/shared/lib/either'
+import { getServerSession } from 'next-auth'
 
-export const createMoviePopoverAction = async (formData: FormData) => {
-    try {
-        const data = Object.fromEntries(formData.entries())
-        const parsed = createMovieInputSchema.parse(data)
-        await createMovie(parsed)
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { createMovie } from '@/entities/movie'
+import { createMovieInputSchema, MovieEntity } from '@/entities/movie/domain'
+import { Either, left } from '@/shared/lib/either'
 
-        return right('Movie successfully created')
-    } catch (e) {
-        return left('Failed to create movie')
+export const createMoviePopoverAction = async (
+    formData?: FormData,
+): Promise<Either<string, MovieEntity>> => {
+    if (!formData) {
+        return left('No form data!')
     }
+
+    const session = await getServerSession(authOptions)
+    const userEmail = session?.user?.email
+
+    const data = Object.fromEntries(formData.entries())
+    const parsed = createMovieInputSchema.parse({
+        ...data,
+        creatorEmail: userEmail,
+    })
+
+    return await createMovie(parsed)
 }
