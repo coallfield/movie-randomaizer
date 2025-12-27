@@ -1,26 +1,22 @@
 'use client'
-import { useState } from 'react'
 
 import { RandomMovieDialog } from '@/features/get-random-movie/ui/RandomMovieDialog'
-import { MovieEntity } from '@/entities/movie/domain'
-import { randomMovie } from '@/entities/movie'
-import { useMutation } from '@/shared/lib/use-query-mutation'
 
 import { GetRandomMovieButton } from '../ui/GetRandomMovieButton'
+import { IncludeAllMoviesCheckbox } from '@/features/get-random-movie/ui/IncludeAllMoviesCheckbox'
+
+import { useGetRandomMovie } from '@/features/get-random-movie/actions/use-get-random-movie'
 
 export const GetRandomMovieLayout = () => {
-    const [isOpen, setIsOpen] = useState(false)
-
     const {
-        execute,
+        isOpen,
         isLoading,
-        state: movie,
-    } = useMutation<void, MovieEntity>(randomMovie)
-
-    const handleClick = async () => {
-        await execute()
-        setIsOpen((prev) => !prev)
-    }
+        isChecked,
+        setIsOpen,
+        setChecked,
+        movie,
+        random,
+    } = useGetRandomMovie()
 
     return (
         <>
@@ -29,8 +25,13 @@ export const GetRandomMovieLayout = () => {
                 open={isOpen}
                 onOpenChange={setIsOpen}
             />
-
-            <GetRandomMovieButton isLoading={isLoading} onClick={handleClick} />
+            <div className="flex flex-col justify-center items-center gap-4">
+                <GetRandomMovieButton isLoading={isLoading} onClick={random} />
+                <IncludeAllMoviesCheckbox
+                    onCheckedChange={setChecked}
+                    checked={isChecked}
+                />
+            </div>
         </>
     )
 }

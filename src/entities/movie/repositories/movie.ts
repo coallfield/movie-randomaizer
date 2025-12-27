@@ -3,17 +3,37 @@ import { prisma } from '@/shared/lib/db'
 import cuid from 'cuid'
 
 class MovieRepository {
-    moviesList = async (): Promise<MovieEntity[]> => {
-        return prisma.movie.findMany()
+    moviesList = async (email?: string | null): Promise<MovieEntity[]> => {
+        return prisma.movie.findMany({
+            where: {
+                users: {
+                    some: {
+                        email: email,
+                    },
+                },
+            },
+            include: {
+                users: true,
+            },
+        })
     }
 
-    randomMovie = async (): Promise<MovieEntity> => {
-        const result = await prisma.$queryRaw<MovieEntity[]>`
-            SELECT *
-            FROM Movie
-            ORDER BY RANDOM()
-            LIMIT 1;`
-        return result[0]
+    randomMovie = async (email?: string | null): Promise<MovieEntity> => {
+        const whereClause = email ? { users: { some: { email } } } : {}
+
+        const count = await prisma.movie.count({
+            where: whereClause,
+        })
+
+        const randomIndex = Math.floor(Math.random() * count)
+
+        const movies = await prisma.movie.findMany({
+            where: whereClause,
+            take: 1,
+            skip: randomIndex,
+        }) // [{}]
+
+        return movies[0]
     }
 
     createMovie = async (movie: CreateMovieEntity): Promise<MovieEntity> => {
@@ -33,12 +53,9 @@ class MovieRepository {
         return newMovie
     }
 
-    updateMovie = async (movie: MovieEntity): Promise<MovieEntity> => {
-        return prisma.movie.update({
-            where: { id: movie.id },
-            data: movie,
-        })
-    }
+    // updateMovie = async (movie: MovieEntity): Promise<MovieEntity> => {
+    //
+    // }
 
     deleteMovie = async (movieId: string): Promise<MovieEntity> => {
         return prisma.movie.delete({

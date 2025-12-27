@@ -1,3 +1,5 @@
+// maybe move to header module
+
 import { RefreshCcw, LogOut } from 'lucide-react'
 import { signIn, signOut, useSession } from 'next-auth/react'
 

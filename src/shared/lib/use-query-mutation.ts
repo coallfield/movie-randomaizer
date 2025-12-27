@@ -21,7 +21,7 @@ export const useQuery = <T>(query: () => Promise<Either<string, T>>) => {
                     setError(response.error)
                 }
             })
-            .finally(() => setIsLoading((prev) => !prev))
+            .finally(() => setIsLoading(false))
     }, [])
 
     return {

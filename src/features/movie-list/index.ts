@@ -1,1 +1,1 @@
-export { MovieList } from './containers/movie-list'
+export { MovieListsLayout } from './containers/movie-lists-layout'

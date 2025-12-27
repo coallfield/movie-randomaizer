@@ -1,4 +1,4 @@
-'use client'
+import { ReactNode } from 'react'
 
 import {
     Card,
@@ -9,21 +9,21 @@ import {
 } from '@/shared/ui/card'
 import { MovieEntity } from '@/entities/movie/domain'
 import { Button } from '@/shared/ui/button'
-import { DeleteMovieButton } from '../actions/delete-movie-button'
 
 interface Props {
     movie: MovieEntity
+    actions?: ReactNode
 }
 
 export const MovieCard = (props: Props) => {
-    const { movie } = props
+    const { movie, actions } = props
     return (
         <Card key={movie.id} className="w-72">
             <CardHeader className="flex flex-row justify-center items-center">
                 <CardTitle className="text-3xl uppercase">
                     {movie.name}
                 </CardTitle>
-                <DeleteMovieButton movieId={movie.id} />
+                {actions}
             </CardHeader>
             <CardContent>
                 {movie.imageUrl ? (

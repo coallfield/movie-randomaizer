@@ -6,6 +6,9 @@ export type MovieEntity = {
     description: string | null
     imageUrl: string | null
     detailsUrl: string | null
+    users?: {
+        email: string | null
+    }[] // have to improve somehow
 }
 
 // for field tag: name
